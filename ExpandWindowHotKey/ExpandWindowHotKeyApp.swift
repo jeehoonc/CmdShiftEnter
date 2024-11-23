@@ -30,11 +30,11 @@ struct ExpandWindowHotKeyApp: App {
 class AppDelegate: NSObject, NSApplicationDelegate {
   var hotKeyRegistry: HotKeyRegistry = HotKeyRegistry()
   var windowManager: WindowManager = WindowManager()
-  
+
   func getHotKeyRegistry() -> UnsafeMutablePointer<HotKeyRegistry>  {
     return withUnsafeMutablePointer(to: &hotKeyRegistry) { pointer in return pointer }
   }
-  
+
   func applicationDidFinishLaunching(_ notification: Notification) {
     hotKeyRegistry.registerHotKey()
   }

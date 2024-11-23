@@ -19,6 +19,12 @@ class WindowManager: ObservableObject {
   // map of window states per window ID
   private static var windowStates: [CGWindowID: WindowState?] = [:]
 
+  // map of AXObserver per process ID
+  private static var axObservers: [pid_t: AXObserver?] = [:]
+
+  // event listener thread runloop
+  private static var axObserverRunLoopThread: BackgroundThreadWithRunLoop! = BackgroundThreadWithRunLoop("axObserverRunLoopThread")
+
   public static func resize() {
     let frontApp = NSWorkspace.shared.runningApplications.first { $0.isActive }
     guard let frontAppPid = frontApp?.processIdentifier else { exit (1) }
@@ -48,13 +54,34 @@ class WindowManager: ObservableObject {
       return;
     }
 
+    // lookup AXObserver dictionary
+    if !axObservers.keys.contains(frontAppPid) {
+      var axObserverOut: AXObserver?
+      let result: AXError = AXObserverCreate(frontAppPid, _observerCallback, &axObserverOut)
+      guard result == .success else {
+        print("Failed to create AXObserver for frontAppPid", frontAppPid, ": result=", result)
+        return;
+      }
+
+      // register the axObserver source to run loop
+      // TODO: remove axObserver source from run loop when the process terminates
+      axObserverRunLoopThread.startIfNotStarted()
+      CFRunLoopAddSource(axObserverRunLoopThread.runLoop, AXObserverGetRunLoopSource(axObserverOut!), .defaultMode)
+      axObserverRunLoopThread.axObserverAdded = true
+
+      // update axObservers map
+      axObservers[frontAppPid] = axObserverOut
+    }
+    let axObserver: AXObserver? = axObservers[frontAppPid]!
+    print("frontAppPid =", frontAppPid, ", axObserver =", axObserver!)
+
     // lookup windowState dictionary
     let containedWindowID = windowStates.keys.contains(windowID)
     if !windowStates.keys.contains(windowID) {
       windowStates[windowID] = WindowState(isFullSize: false)
     }
     var windowState: WindowState? = windowStates[windowID]!
-    print("windowID =", windowID, ", containedWindowID =", containedWindowID, ", windowState =", windowState)
+    print("windowID =", windowID, ", containedWindowID =", containedWindowID, ", windowState =", windowState!)
 
     // expand or shrink, depending on the window state
     if windowState?.isFullSize == false {
@@ -73,7 +100,13 @@ class WindowManager: ObservableObject {
       windowState?.isFullSize = true
       windowState?.originalPosition = position
       windowState?.originalSize = size
-      print("Updated window state (isFullSize: false --> true): windowID =", windowID, ", windowState =", windowState)
+      print("Updated window state (isFullSize: false --> true): windowID =", windowID, ", windowState =", windowState!)
+
+      // register AXObserver
+      for notificationType in _notificationTypes {
+        let result = AXObserverAddNotification(axObserver!, focusedWindowElement, notificationType as CFString, nil)
+        print("Add notification for", notificationType, ": result =", result.rawValue)
+      }
     } else {
       // expand the focused window to the maximum frame of the screen
       AXUIElementHelper.setPosition(windowElement: focusedWindowElement, position: windowState?.originalPosition)
@@ -81,7 +114,13 @@ class WindowManager: ObservableObject {
 
       // update windowState
       windowState?.isFullSize = false
-      print("Updated window state (isFullSize: true --> false): windowID =", windowID, ", windowState =", windowState)
+      print("Updated window state (isFullSize: true --> false): windowID =", windowID, ", windowState =", windowState!)
+
+      // unregister AXObserver
+      for notificationType in _notificationTypes {
+        let result = AXObserverRemoveNotification(axObserver!, focusedWindowElement, notificationType as CFString)
+        print("Remove notification for", notificationType, ": result =", result.rawValue)
+      }
     }
 
     // update windowStates map
@@ -102,7 +141,7 @@ struct AXUIElementHelper {
     guard let newAXValue = AXValueCreate(.cgSize, &newSize) else { return }
     AXUIElementSetAttributeValue(windowElement, NSAccessibility.Attribute.size.rawValue as CFString, newAXValue)
   }
-  
+
   static func setPosition(windowElement: AXUIElement, position: CGPoint?) {
     guard var newPosition = position else { return }
     guard let newAXValue = AXValueCreate(.cgPoint, &newPosition) else { return }
@@ -129,7 +168,7 @@ struct AXUIElementHelper {
 
   static func getAXValue<T>(element: AXUIElement, attribute: NSAccessibility.Attribute) -> T? {
     guard let value = getValue(element: element, attribute: attribute), CFGetTypeID(value) == AXValueGetTypeID() else { return nil }
-    
+
     let axValue = value as! AXValue
     let pointer = UnsafeMutablePointer<T>.allocate(capacity: 1)
     let success = AXValueGetValue(axValue, AXValueGetType(axValue), pointer)

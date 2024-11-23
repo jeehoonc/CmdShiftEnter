@@ -17,6 +17,7 @@
 		45D52D3F2A07277F000E6889 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D52D3B2A07277F000E6889 /* SettingsView.swift */; };
 		45D52D402A07277F000E6889 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D52D3C2A07277F000E6889 /* Constants.swift */; };
 		45D52D412A07277F000E6889 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D52D3D2A07277F000E6889 /* WindowManager.swift */; };
+		A5D884672CECC28C003BB746 /* WindowEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D884662CECC27D003BB746 /* WindowEventHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		45D52D3B2A07277F000E6889 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		45D52D3C2A07277F000E6889 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		45D52D3D2A07277F000E6889 /* WindowManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
+		A5D884662CECC27D003BB746 /* WindowEventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowEventHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				45D52D3A2A07277F000E6889 /* HotKeyRegistry.swift */,
 				45D52D3B2A07277F000E6889 /* SettingsView.swift */,
 				45D52D3D2A07277F000E6889 /* WindowManager.swift */,
+				A5D884662CECC27D003BB746 /* WindowEventHandler.swift */,
 				45D52D282A07275E000E6889 /* Assets.xcassets */,
 				45D52D2D2A07275E000E6889 /* ExpandWindowHotKey.entitlements */,
 				45D52D2A2A07275E000E6889 /* Preview Content */,
@@ -171,6 +174,7 @@
 				45D52D382A07276F000E6889 /* ModifierFlagsConverter.swift in Sources */,
 				45D52D412A07277F000E6889 /* WindowManager.swift in Sources */,
 				45D52D3E2A07277F000E6889 /* HotKeyRegistry.swift in Sources */,
+				A5D884672CECC28C003BB746 /* WindowEventHandler.swift in Sources */,
 				45D52D392A07276F000E6889 /* UIntConverter.swift in Sources */,
 				45D52D402A07277F000E6889 /* Constants.swift in Sources */,
 			);
