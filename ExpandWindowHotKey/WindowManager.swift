@@ -6,197 +6,127 @@
 //
 
 import SwiftUI
-import AppKit
 
-class WindowManager: ObservableObject {
+class WindowManager {
+  private var windowStateRegistry = WindowStateRegistry.getInstance()
+  private var axObserverRegistry = ProcessAXObserverRegistry.getInstance()
+  private let queue = DispatchQueue(label: "WindowRegistryManager.DispatchQueue")
 
-  struct WindowState {
-    var isFullSize: Bool
-    var originalPosition: CGPoint?
-    var originalSize: CGSize?
-  }
+  // singleton instance
+  static let instance = WindowManager()
 
-  // map of window states per window ID
-  private static var windowStates: [CGWindowID: WindowState?] = [:]
+  static func getInstance() -> WindowManager { return instance }
 
-  // map of AXObserver per process ID
-  private static var axObservers: [pid_t: AXObserver?] = [:]
+  private init() {}
 
-  // event listener thread runloop
-  private static var axObserverRunLoopThread: BackgroundThreadWithRunLoop! = BackgroundThreadWithRunLoop("axObserverRunLoopThread")
-
-  public static func resize() {
-    let frontApp = NSWorkspace.shared.runningApplications.first { $0.isActive }
-    guard let frontAppPid = frontApp?.processIdentifier else { exit (1) }
-    let appElement = AXUIElementCreateApplication(frontAppPid)
-    print("frontApp =", frontApp as Any, ", frontAppPid =", frontAppPid, ", appElement =", appElement)
-
-    // check Accessibility Permissions
-    let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
-    let permission = AXIsProcessTrustedWithOptions(options)
-    guard permission == true else {
-      print("Failed: accessibility permission not granted")
-      return;
-    }
-
-    // retrieve focused window as AXUIElement
-    var focusedWindow: AnyObject?
-    let result = AXUIElementCopyAttributeValue(appElement, kAXFocusedWindowAttribute as CFString, &focusedWindow)
-    guard result == .success else {
-      print ("Failed to get focused window: result =", result)
+  // idempotent
+  private func addToRegistry(element: AXUIElement, pid: pid_t, windowID: CGWindowID, position: CGPoint?, size: CGSize?) {
+    // do nothing, if the window is already added to the registry
+    if (windowStateRegistry.hasWindowState(windowID: windowID)) {
       return
     }
-    let focusedWindowElement: AXUIElement = (focusedWindow as! AXUIElement)
 
-    // retrieve window ID
-    guard let windowID: CGWindowID = AXUIElementHelper.getWindowId(windowElement: focusedWindowElement) else {
-      print("Failed to get windowID")
-      return;
+    // update windowState
+    WindowStateRegistry.getInstance().setWindowState(windowID: windowID, position: position, size: size)
+
+    // register AXObserver
+    let observerRegistry = ProcessAXObserverRegistry.getInstance()
+    observerRegistry.ensureInitialized(pid: pid)
+    observerRegistry.registerNotifications(pid: pid, element: element)
+  }
+
+  private func removeFromRegistry(element: AXUIElement, pid: pid_t, windowID: CGWindowID) {
+    // do nothing, if already removed from the registry
+    if (!windowStateRegistry.hasWindowState(windowID: windowID)) {
+      return
     }
 
-    // lookup AXObserver dictionary
-    if !axObservers.keys.contains(frontAppPid) {
-      var axObserverOut: AXObserver?
-      let result: AXError = AXObserverCreate(frontAppPid, _observerCallback, &axObserverOut)
-      guard result == .success else {
-        print("Failed to create AXObserver for frontAppPid", frontAppPid, ": result=", result)
+    // remove windowState
+    WindowStateRegistry.getInstance().removeWindowState(windowID: windowID)
+
+    // unregister AXObserver
+    ProcessAXObserverRegistry.getInstance().unregisterNotifications(pid: pid, element: element)
+  }
+
+  func resize() {
+    queue.sync {
+      // retrieve frontApp PID and AXUIElement
+      let frontApp = NSWorkspace.shared.runningApplications.first { $0.isActive }
+      guard let pid = frontApp?.processIdentifier else { exit (1) }
+      let appElement = AXUIElementCreateApplication(pid)
+      print("frontApp =", frontApp as Any, ", pid =", pid, ", appElement =", appElement)
+
+      // check Accessibility Permissions
+      let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
+      let permission = AXIsProcessTrustedWithOptions(options)
+      guard permission == true else {
+        print("Failed: accessibility permission not granted")
         return;
       }
 
-      // register the axObserver source to run loop
-      // TODO: remove axObserver source from run loop when the process terminates
-      axObserverRunLoopThread.startIfNotStarted()
-      CFRunLoopAddSource(axObserverRunLoopThread.runLoop, AXObserverGetRunLoopSource(axObserverOut!), .defaultMode)
-      axObserverRunLoopThread.axObserverAdded = true
-
-      // update axObservers map
-      axObservers[frontAppPid] = axObserverOut
-    }
-    let axObserver: AXObserver? = axObservers[frontAppPid]!
-    print("frontAppPid =", frontAppPid, ", axObserver =", axObserver!)
-
-    // lookup windowState dictionary
-    let containedWindowID = windowStates.keys.contains(windowID)
-    if !windowStates.keys.contains(windowID) {
-      windowStates[windowID] = WindowState(isFullSize: false)
-    }
-    var windowState: WindowState? = windowStates[windowID]!
-    print("windowID =", windowID, ", containedWindowID =", containedWindowID, ", windowState =", windowState!)
-
-    // expand or shrink, depending on the window state
-    if windowState?.isFullSize == false {
-      // retrieve position of the focused window
-      let position: CGPoint? = AXUIElementHelper.getPosition(windowElement: focusedWindowElement)
-      let size: CGSize? = AXUIElementHelper.getSize(windowElement: focusedWindowElement)
-
-      // retrieve screen that is containing the position of the focused window
-      let screen = ScreenDetectHelper.getScreenContaining(point: position!)
-
-      // expand the focused window to the maximum frame of the screen
-      AXUIElementHelper.setPosition(windowElement: focusedWindowElement, position: screen?.frame.origin)
-      AXUIElementHelper.setSize(windowElement: focusedWindowElement, size: screen?.frame.size)
-
-      // update windowState
-      windowState?.isFullSize = true
-      windowState?.originalPosition = position
-      windowState?.originalSize = size
-      print("Updated window state (isFullSize: false --> true): windowID =", windowID, ", windowState =", windowState!)
-
-      // register AXObserver
-      for notificationType in _notificationTypes {
-        let result = AXObserverAddNotification(axObserver!, focusedWindowElement, notificationType as CFString, nil)
-        print("Add notification for", notificationType, ": result =", result.rawValue)
+      // retrieve focused window as AXUIElement
+      var focusedWindow: AnyObject?
+      let result = AXUIElementCopyAttributeValue(appElement, kAXFocusedWindowAttribute as CFString, &focusedWindow)
+      guard result == .success else {
+        print ("Failed to get focused window: result =", result)
+        return
       }
-    } else {
-      // expand the focused window to the maximum frame of the screen
-      AXUIElementHelper.setPosition(windowElement: focusedWindowElement, position: windowState?.originalPosition)
-      AXUIElementHelper.setSize(windowElement: focusedWindowElement, size: windowState?.originalSize)
+      let element: AXUIElement = (focusedWindow as! AXUIElement)
 
-      // update windowState
-      windowState?.isFullSize = false
-      print("Updated window state (isFullSize: true --> false): windowID =", windowID, ", windowState =", windowState!)
+      // retrieve window ID
+      guard let windowID: CGWindowID = AXUIElementHelper.getWindowId(windowElement: element) else {
+        print("Failed to get windowID")  // TODO: throw
+        return;
+      }
 
-      // unregister AXObserver
-      for notificationType in _notificationTypes {
-        let result = AXObserverRemoveNotification(axObserver!, focusedWindowElement, notificationType as CFString)
-        print("Remove notification for", notificationType, ": result =", result.rawValue)
+      // expand or unexpand, depending on the window state
+      if (!windowStateRegistry.hasWindowState(windowID: windowID)) {
+        // retrieve position of the focused window
+        let position: CGPoint? = AXUIElementHelper.getPosition(windowElement: element)
+        let size: CGSize? = AXUIElementHelper.getSize(windowElement: element)
+
+        // retrieve screen that is containing the position of the focused window
+        let screen = ScreenDetectHelper.getScreenContaining(point: position!)
+
+        // expand the focused window to the maximum frame of the screen
+        AXUIElementHelper.setPosition(windowElement: element, position: screen?.frame.origin)
+        AXUIElementHelper.setSize(windowElement: element, size: screen?.frame.size)
+        print("Expanded focused window element:", size!, "--> (full)")
+
+        // add to registry
+        addToRegistry(element: element, pid: pid, windowID: windowID, position: position, size: size)
+      } else {
+        // remove from registry
+        let windowState = WindowStateRegistry.getInstance().getWindowState(windowID: windowID)
+        removeFromRegistry(element: element, pid: pid, windowID: windowID)
+
+        // unexpand the focused window (shrink to its original size)
+        AXUIElementHelper.setPosition(windowElement: element, position: windowState.originalPosition)
+        AXUIElementHelper.setSize(windowElement: element, size: windowState.originalSize)
+        print("Shrinked focused window element: (full) -->", windowState.originalSize!)
       }
     }
-
-    // update windowStates map
-    windowStates.updateValue(windowState, forKey: windowID)
-  }
-}
-
-struct AXUIElementHelper {
-  static func getWindowId(windowElement: AXUIElement) -> CGWindowID? {
-    var windowId = CGWindowID(0)
-    let result = _AXUIElementGetWindow(windowElement, &windowId)
-    guard result == .success else { return nil }
-    return windowId
   }
 
-  static func setSize(windowElement: AXUIElement, size: CGSize?) {
-    guard var newSize = size else { return }
-    guard let newAXValue = AXValueCreate(.cgSize, &newSize) else { return }
-    AXUIElementSetAttributeValue(windowElement, NSAccessibility.Attribute.size.rawValue as CFString, newAXValue)
-  }
-
-  static func setPosition(windowElement: AXUIElement, position: CGPoint?) {
-    guard var newPosition = position else { return }
-    guard let newAXValue = AXValueCreate(.cgPoint, &newPosition) else { return }
-    AXUIElementSetAttributeValue(windowElement, NSAccessibility.Attribute.position.rawValue as CFString, newAXValue)
-  }
-
-  static func getSize(windowElement: AXUIElement) -> CGSize? {
-    return getAXValue(element: windowElement, attribute: .size)
-  }
-
-  static func getPosition(windowElement: AXUIElement) -> CGPoint? {
-    return getAXValue(element: windowElement, attribute: .position)
-  }
-
-  static func getValue(element: AXUIElement, attribute: NSAccessibility.Attribute) -> AnyObject? {
-    var value: AnyObject? = nil
-    AXUIElementCopyAttributeValue(element, attribute.rawValue as CFString, &value)
-    return value
-  }
-
-  static func setValue(element: AXUIElement, attribute: NSAccessibility.Attribute, value: AnyObject) {
-    AXUIElementSetAttributeValue(element, attribute.rawValue as CFString, value)
-  }
-
-  static func getAXValue<T>(element: AXUIElement, attribute: NSAccessibility.Attribute) -> T? {
-    guard let value = getValue(element: element, attribute: attribute), CFGetTypeID(value) == AXValueGetTypeID() else { return nil }
-
-    let axValue = value as! AXValue
-    let pointer = UnsafeMutablePointer<T>.allocate(capacity: 1)
-    let success = AXValueGetValue(axValue, AXValueGetType(axValue), pointer)
-    return success ? pointer.pointee : nil
-  }
-
-  static func setAXValue<T>(element: AXUIElement, attribute: NSAccessibility.Attribute, value: T, type: AXValueType) {
-    let pointer = UnsafeMutablePointer<T>.allocate(capacity: 1)
-    pointer.pointee = value
-    guard let axValue = AXValueCreate(type, pointer) else { return }
-    setValue(element: element, attribute: attribute, value: axValue)
-  }
-}
-
-struct ScreenDetectHelper {
-  static func getScreenContaining(point: CGPoint) -> NSScreen? {
-    return getScreenOf(filter: { frame in
-      return NSRectToCGRect(frame).contains(point)
-    })
-  }
-
-  private static func getScreenOf(filter: (NSRect) -> Bool) -> NSScreen? {
-    for screen in NSScreen.screens {
-      if filter(screen.frame) { return screen }
+  func handleEvent(_ type: String, _ element: AXUIElement) {
+    queue.sync {
+      switch type {
+        case kAXUIElementDestroyedNotification: fallthrough;
+        case kAXWindowResizedNotification: fallthrough;
+        case kAXWindowMovedNotification:
+          var windowID: CGWindowID? = nil
+          while (windowID == nil) {
+            windowID = AXUIElementHelper.getWindowId(windowElement: element)
+          }
+          var pid: pid_t? = nil
+          while (pid == nil) {
+            pid = AXUIElementHelper.getProcessId(windowElement: element)
+          }
+          removeFromRegistry(element: element, pid: pid!, windowID: windowID!)
+          break
+        default:
+          return
+      }
     }
-    return NSScreen.main
   }
 }
-
-@_silgen_name("_AXUIElementGetWindow") @discardableResult
-func _AXUIElementGetWindow(_ axUiElement: AXUIElement, _ wid: inout CGWindowID) -> AXError

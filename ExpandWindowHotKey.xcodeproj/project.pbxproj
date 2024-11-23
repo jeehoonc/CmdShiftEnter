@@ -17,7 +17,11 @@
 		45D52D3F2A07277F000E6889 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D52D3B2A07277F000E6889 /* SettingsView.swift */; };
 		45D52D402A07277F000E6889 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D52D3C2A07277F000E6889 /* Constants.swift */; };
 		45D52D412A07277F000E6889 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D52D3D2A07277F000E6889 /* WindowManager.swift */; };
-		A5D884672CECC28C003BB746 /* WindowEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D884662CECC27D003BB746 /* WindowEventHandler.swift */; };
+		A5D884672CECC28C003BB746 /* BackgroundThreadWithRunLoop.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D884662CECC27D003BB746 /* BackgroundThreadWithRunLoop.swift */; };
+		A5D8846B2CF346E2003BB746 /* WindowStateRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D8846A2CF346DE003BB746 /* WindowStateRegistry.swift */; };
+		A5D8846D2CF346E9003BB746 /* AXObserverRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D8846C2CF346E6003BB746 /* AXObserverRegistry.swift */; };
+		A5D884702CF35084003BB746 /* AXUIElementHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D8846F2CF3507F003BB746 /* AXUIElementHelper.swift */; };
+		A5D884722CF3509E003BB746 /* ScreenDetectHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D884712CF3509A003BB746 /* ScreenDetectHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +37,11 @@
 		45D52D3B2A07277F000E6889 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		45D52D3C2A07277F000E6889 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		45D52D3D2A07277F000E6889 /* WindowManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
-		A5D884662CECC27D003BB746 /* WindowEventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowEventHandler.swift; sourceTree = "<group>"; };
+		A5D884662CECC27D003BB746 /* BackgroundThreadWithRunLoop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundThreadWithRunLoop.swift; sourceTree = "<group>"; };
+		A5D8846A2CF346DE003BB746 /* WindowStateRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowStateRegistry.swift; sourceTree = "<group>"; };
+		A5D8846C2CF346E6003BB746 /* AXObserverRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXObserverRegistry.swift; sourceTree = "<group>"; };
+		A5D8846F2CF3507F003BB746 /* AXUIElementHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXUIElementHelper.swift; sourceTree = "<group>"; };
+		A5D884712CF3509A003BB746 /* ScreenDetectHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenDetectHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,13 +74,13 @@
 		45D52D232A07275C000E6889 /* ExpandWindowHotKey */ = {
 			isa = PBXGroup;
 			children = (
+				A5D8846E2CF35075003BB746 /* Interface */,
+				A5D884692CF2D864003BB746 /* Registry */,
 				45D52D332A07276F000E6889 /* Converters */,
 				45D52D242A07275C000E6889 /* ExpandWindowHotKeyApp.swift */,
 				45D52D3C2A07277F000E6889 /* Constants.swift */,
-				45D52D3A2A07277F000E6889 /* HotKeyRegistry.swift */,
 				45D52D3B2A07277F000E6889 /* SettingsView.swift */,
 				45D52D3D2A07277F000E6889 /* WindowManager.swift */,
-				A5D884662CECC27D003BB746 /* WindowEventHandler.swift */,
 				45D52D282A07275E000E6889 /* Assets.xcassets */,
 				45D52D2D2A07275E000E6889 /* ExpandWindowHotKey.entitlements */,
 				45D52D2A2A07275E000E6889 /* Preview Content */,
@@ -96,6 +104,26 @@
 				45D52D362A07276F000E6889 /* UIntConverter.swift */,
 			);
 			path = Converters;
+			sourceTree = "<group>";
+		};
+		A5D884692CF2D864003BB746 /* Registry */ = {
+			isa = PBXGroup;
+			children = (
+				A5D8846C2CF346E6003BB746 /* AXObserverRegistry.swift */,
+				A5D8846A2CF346DE003BB746 /* WindowStateRegistry.swift */,
+				45D52D3A2A07277F000E6889 /* HotKeyRegistry.swift */,
+				A5D884662CECC27D003BB746 /* BackgroundThreadWithRunLoop.swift */,
+			);
+			path = Registry;
+			sourceTree = "<group>";
+		};
+		A5D8846E2CF35075003BB746 /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				A5D884712CF3509A003BB746 /* ScreenDetectHelper.swift */,
+				A5D8846F2CF3507F003BB746 /* AXUIElementHelper.swift */,
+			);
+			path = Interface;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -170,13 +198,17 @@
 			files = (
 				45D52D3F2A07277F000E6889 /* SettingsView.swift in Sources */,
 				45D52D372A07276F000E6889 /* NSEventKeyCodeToString.swift in Sources */,
+				A5D8846B2CF346E2003BB746 /* WindowStateRegistry.swift in Sources */,
 				45D52D252A07275C000E6889 /* ExpandWindowHotKeyApp.swift in Sources */,
 				45D52D382A07276F000E6889 /* ModifierFlagsConverter.swift in Sources */,
 				45D52D412A07277F000E6889 /* WindowManager.swift in Sources */,
 				45D52D3E2A07277F000E6889 /* HotKeyRegistry.swift in Sources */,
-				A5D884672CECC28C003BB746 /* WindowEventHandler.swift in Sources */,
+				A5D8846D2CF346E9003BB746 /* AXObserverRegistry.swift in Sources */,
+				A5D884672CECC28C003BB746 /* BackgroundThreadWithRunLoop.swift in Sources */,
+				A5D884722CF3509E003BB746 /* ScreenDetectHelper.swift in Sources */,
 				45D52D392A07276F000E6889 /* UIntConverter.swift in Sources */,
 				45D52D402A07277F000E6889 /* Constants.swift in Sources */,
+				A5D884702CF35084003BB746 /* AXUIElementHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

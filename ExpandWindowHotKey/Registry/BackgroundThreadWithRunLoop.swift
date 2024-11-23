@@ -8,37 +8,6 @@
 import ApplicationServices.HIServices.AXUIElement
 import ApplicationServices.HIServices.AXNotificationConstants
 
-let _notificationTypes = [kAXUIElementDestroyedNotification, kAXWindowResizedNotification, kAXWindowMovedNotification]
-
-let _observerCallback: AXObserverCallback = {  (observer, element, notification, refcon) in
-  // do something
-  let type = notification as String
-  print("type =", type)
-  handleEvent(type, element)
-}
-
-fileprivate func handleEvent(_ type: String, _ element: AXUIElement) {
-    // events are handled concurrently, thus we check that the app is still running
-    switch type {
-      case kAXUIElementDestroyedNotification: windowDestroyed(element);
-      case kAXWindowResizedNotification: windowResized(element);
-      case kAXWindowMovedNotification: windowMoved(element);
-      default: return
-    }
-}
-
-fileprivate func windowDestroyed(_ element: AXUIElement) {
-  print("windowDestroyed: element =", element)
-}
-
-fileprivate func windowResized(_ element: AXUIElement) {
-  print("windowResized: element =", element)
-}
-
-fileprivate func windowMoved(_ element: AXUIElement) {
-  print("windowMoved: element =", element)
-}
-
 class BackgroundThreadWithRunLoop {
   var thread: Thread?
   var runLoop: CFRunLoop?

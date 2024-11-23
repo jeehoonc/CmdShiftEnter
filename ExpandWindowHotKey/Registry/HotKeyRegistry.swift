@@ -72,6 +72,6 @@ private func hotKeyEventHandler(eventHandlerCall: EventHandlerCallRef?, event: E
     &hotKeyID)
   print("TEST")
   print("hotKeyID =", hotKeyID)
-  WindowManager.resize()
+  WindowManager.getInstance().resize()
   return noErr
 }
