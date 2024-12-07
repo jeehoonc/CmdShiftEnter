@@ -10,6 +10,10 @@ Troubleshooting
 
 ### In-development
 
+#### NSScreen.Screens Coordinates don't align with AXUIElement coordinates for multi-monitor displays
+https://github.com/tmandry/Swindler/issues/62<br>
+https://github.com/rxhanson/Rectangle/issues/15
+
 #### AXUIElement API does not have public API to retrieve unique window ID
 https://stackoverflow.com/questions/1742890/<br>
 https://stackoverflow.com/questions/6178860/<br>

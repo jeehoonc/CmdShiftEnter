@@ -84,14 +84,21 @@ class WindowManager {
         // retrieve position of the focused window
         let position: CGPoint? = AXUIElementHelper.getPosition(windowElement: element)
         let size: CGSize? = AXUIElementHelper.getSize(windowElement: element)
+        print("(Expand) Detected focused window position:", position!)
+        print("(Expand) Detected focused window size:", size!)
 
         // retrieve screen that is containing the position of the focused window
-        let screen = ScreenDetectHelper.getScreenContaining(point: position!)
+        guard let screen: NSScreen = ScreenDetectHelper.getScreenContaining(point: position!) else {
+          print("Failed to get screen containing the window")  // TODO: throw
+          return;
+        }
 
         // expand the focused window to the maximum frame of the screen
-        AXUIElementHelper.setPosition(windowElement: element, position: screen?.frame.origin)
-        AXUIElementHelper.setSize(windowElement: element, size: screen?.frame.size)
-        print("Expanded focused window element:", size!, "--> (full)")
+        let frame = ScreenDetectHelper.convertOriginToQuartz(frame: screen.frame)
+        AXUIElementHelper.setPosition(windowElement: element, position: frame.origin)
+        AXUIElementHelper.setSize(windowElement: element, size: frame.size)
+        print("(Expand) Positioned focused window element:", position, "-->", frame.origin)
+        print("(Expand) Resized focused window element:", size!, "-->", frame.size)
 
         // add to registry
         addToRegistry(element: element, pid: pid, windowID: windowID, position: position, size: size)
@@ -103,7 +110,8 @@ class WindowManager {
         // unexpand the focused window (shrink to its original size)
         AXUIElementHelper.setPosition(windowElement: element, position: windowState.originalPosition)
         AXUIElementHelper.setSize(windowElement: element, size: windowState.originalSize)
-        print("Shrinked focused window element: (full) -->", windowState.originalSize!)
+        print("(Shrink) Reverted focused window element position:", windowState.originalPosition)
+        print("(Shrink) Resized focused window element: (full) -->", windowState.originalSize!)
       }
     }
   }
