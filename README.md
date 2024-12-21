@@ -1,14 +1,29 @@
 # ExpandWindowHotKey
 Hot key macOS app to expand current focused window to the maximum possible frame of the screen.
 
-Coding Guidelines
+Usage
 -
+- Press your [Hot Key](#hot-key) to expand current focused window to the maximum possible size of the screen.
+- Press your [Hot Key](#hot-key) to shrink the expanded focused window to the original size of the window.
+
+Settings
+- 
+### Hot Key
+
+> [!NOTE]  
+> `Cmd + Shift + Enter` is the default.
+
+1) Go to "Foo" -> "Settings"
+2) Press any key combination that you'd like to configure as your "Hot Key".
+3) Click "Save". Now the combination you just saved is now your new "Hot Key".
+
+Development
+-
+
+### Coding Guideline
 - Refrain from using [Extensions](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/extensions/) as a backdoor to access member variables/functions of a class bypassing their visibility constraints. Extend only if the class really needs a proper extension, otherwise use existing APIs that the class is supposed to provide.
 
-Troubleshooting
--
-
-### In-development
+### Troubleshooting
 
 #### NSScreen.Screens Coordinates don't align with AXUIElement coordinates for multi-monitor displays
 https://github.com/tmandry/Swindler/issues/62<br>
@@ -32,8 +47,6 @@ func _AXUIElementGetWindow(_ axUiElement: AXUIElement, _ wid: inout CGWindowID) 
 
 AXError _AXUIElementGetWindow(AXUIElementRef element, uint32_t *identifier);
 ```
-
-### Project Settings
 
 #### The debug build does not have accessibility permissions granted (i.e. `AXIsProcessTrustedWithOptions` returns `false`).
 https://stackoverflow.com/questions/52214771<br>
