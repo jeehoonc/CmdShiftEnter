@@ -1,10 +1,10 @@
-# ExpandWindowHotKey
-Hot key macOS app to expand current focused window to the maximum possible frame of the screen.
+# CmdShiftEnter
+A macOS app to expand/unexpand current focused window to/from the maximum size of the screen.
 
 Usage
 -
-- Press your [Hot Key](#hot-key) to expand current focused window to the maximum possible size of the screen.
-- Press your [Hot Key](#hot-key) to shrink the expanded focused window to the original size of the window.
+- Press `Cmd + Shift + Enter` (or your own [Hot Key](#hot-key)) to expand current focused window.
+- Press `Cmd + Shift + Enter` (or your own [Hot Key](#hot-key)) to unexpand the expanded window to its original size.
 
 Settings
 - 
@@ -20,10 +20,10 @@ Settings
 Development
 -
 
-### Coding Guideline
-- Refrain from using [Extensions](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/extensions/) as a backdoor to access member variables/functions of a class bypassing their visibility constraints. Extend only if the class really needs a proper extension, otherwise use existing APIs that the class is supposed to provide.
+### Coding
+- This project often refrain from using [Extensions](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/extensions/) just to bypass the visibility constraints of their member variables/functions. It rather extends only if the class really needs a proper extension (e.g. when it actually implements some mechanisms to be used by multiple callers).
 
-### Troubleshooting
+### Challenges (during development)
 
 #### NSScreen.Screens Coordinates don't align with AXUIElement coordinates for multi-monitor displays
 https://github.com/tmandry/Swindler/issues/62<br>
