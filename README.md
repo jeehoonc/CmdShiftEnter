@@ -6,6 +6,9 @@ Usage
 - Press `Cmd + Shift + Enter` (or your own [Hot Key](#hot-key)) to expand current focused window.
 - Press `Cmd + Shift + Enter` (or your own [Hot Key](#hot-key)) to unexpand the expanded window to its original size.
 
+> [!WARNING]
+> It does nothing if the window was already expanded to the maximum size of the screen by some other modifications rather than this app.
+
 Settings
 - 
 ### Hot Key
