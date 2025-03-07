@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "8975D33B-399D-4FE8-9C35-142E7D467BBB"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B3207504-EA92-42AB-8670-3DCD8910259D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ExpandWindowHotKey/WindowManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "resize()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "B3207504-EA92-42AB-8670-3DCD8910259D - e82d19ea3fcb6860"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ExpandWindowHotKey.WindowManager.resize() -&gt; ()"
+                  moduleName = "ExpandWindowHotKey.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/i567839/workspace/github/ExpandWindowHotKey/ExpandWindowHotKey/WindowManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "52"
+                  endingLineNumber = "52">
+               </Location>
+               <Location
+                  uuid = "B3207504-EA92-42AB-8670-3DCD8910259D - 1a8336ecdd7a907e"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in ExpandWindowHotKey.WindowManager.resize() -&gt; ()"
+                  moduleName = "ExpandWindowHotKey.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/i567839/workspace/github/ExpandWindowHotKey/ExpandWindowHotKey/WindowManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "54"
+                  endingLineNumber = "54">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

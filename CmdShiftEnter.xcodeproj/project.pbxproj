@@ -25,7 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		45D52D212A07275C000E6889 /* ExpandWindowHotKey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpandWindowHotKey.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		45D52D212A07275C000E6889 /* CmdShiftEnter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CmdShiftEnter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D52D242A07275C000E6889 /* ExpandWindowHotKeyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandWindowHotKeyApp.swift; sourceTree = "<group>"; };
 		45D52D282A07275E000E6889 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45D52D2B2A07275E000E6889 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -58,7 +58,7 @@
 		45D52D182A07275C000E6889 = {
 			isa = PBXGroup;
 			children = (
-				45D52D232A07275C000E6889 /* ExpandWindowHotKey */,
+				45D52D232A07275C000E6889 /* CmdShiftEnter */,
 				45D52D222A07275C000E6889 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -66,12 +66,12 @@
 		45D52D222A07275C000E6889 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				45D52D212A07275C000E6889 /* ExpandWindowHotKey.app */,
+				45D52D212A07275C000E6889 /* CmdShiftEnter.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		45D52D232A07275C000E6889 /* ExpandWindowHotKey */ = {
+		45D52D232A07275C000E6889 /* CmdShiftEnter */ = {
 			isa = PBXGroup;
 			children = (
 				A5D8846E2CF35075003BB746 /* Interface */,
@@ -85,7 +85,7 @@
 				45D52D2D2A07275E000E6889 /* ExpandWindowHotKey.entitlements */,
 				45D52D2A2A07275E000E6889 /* Preview Content */,
 			);
-			path = ExpandWindowHotKey;
+			path = CmdShiftEnter;
 			sourceTree = "<group>";
 		};
 		45D52D2A2A07275E000E6889 /* Preview Content */ = {
@@ -129,9 +129,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		45D52D202A07275C000E6889 /* ExpandWindowHotKey */ = {
+		45D52D202A07275C000E6889 /* CmdShiftEnter */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 45D52D302A07275E000E6889 /* Build configuration list for PBXNativeTarget "ExpandWindowHotKey" */;
+			buildConfigurationList = 45D52D302A07275E000E6889 /* Build configuration list for PBXNativeTarget "CmdShiftEnter" */;
 			buildPhases = (
 				45D52D1D2A07275C000E6889 /* Sources */,
 				45D52D1E2A07275C000E6889 /* Frameworks */,
@@ -141,9 +141,9 @@
 			);
 			dependencies = (
 			);
-			name = ExpandWindowHotKey;
+			name = CmdShiftEnter;
 			productName = ExpandWindowHotKey;
-			productReference = 45D52D212A07275C000E6889 /* ExpandWindowHotKey.app */;
+			productReference = 45D52D212A07275C000E6889 /* CmdShiftEnter.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -161,7 +161,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 45D52D1C2A07275C000E6889 /* Build configuration list for PBXProject "ExpandWindowHotKey" */;
+			buildConfigurationList = 45D52D1C2A07275C000E6889 /* Build configuration list for PBXProject "CmdShiftEnter" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -174,7 +174,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				45D52D202A07275C000E6889 /* ExpandWindowHotKey */,
+				45D52D202A07275C000E6889 /* CmdShiftEnter */,
 			);
 		};
 /* End PBXProject section */
@@ -333,11 +333,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = ExpandWindowHotKey/ExpandWindowHotKey.entitlements;
+				CODE_SIGN_ENTITLEMENTS = CmdShiftEnter/CmdShiftEnter.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"ExpandWindowHotKey/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"CmdShiftEnter/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -349,7 +349,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = development.private.jeehoon.ExpandWindowHotKey;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kaffein.terrace.CmdShiftEnter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -362,11 +362,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = ExpandWindowHotKey/ExpandWindowHotKey.entitlements;
+				CODE_SIGN_ENTITLEMENTS = CmdShiftEnter/CmdShiftEnter.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"ExpandWindowHotKey/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -378,7 +378,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = development.private.jeehoon.ExpandWindowHotKey;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kaffein.terrace.CmdShiftEnter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -389,7 +389,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		45D52D1C2A07275C000E6889 /* Build configuration list for PBXProject "ExpandWindowHotKey" */ = {
+		45D52D1C2A07275C000E6889 /* Build configuration list for PBXProject "CmdShiftEnter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				45D52D2E2A07275E000E6889 /* Debug */,
@@ -398,7 +398,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		45D52D302A07275E000E6889 /* Build configuration list for PBXNativeTarget "ExpandWindowHotKey" */ = {
+		45D52D302A07275E000E6889 /* Build configuration list for PBXNativeTarget "CmdShiftEnter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				45D52D312A07275E000E6889 /* Debug */,
