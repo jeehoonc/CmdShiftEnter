@@ -122,15 +122,15 @@ class WindowManager {
         case kAXUIElementDestroyedNotification: fallthrough;
         case kAXWindowResizedNotification: fallthrough;
         case kAXWindowMovedNotification:
-          var windowID: CGWindowID? = nil
-          while (windowID == nil) {
-            windowID = AXUIElementHelper.getWindowId(windowElement: element)
+          guard let windowID: CGWindowID = AXUIElementHelper.getWindowId(windowElement: element) else {
+            print("Failed to get window ID")  // TODO: throw
+            return;
           }
-          var pid: pid_t? = nil
-          while (pid == nil) {
-            pid = AXUIElementHelper.getProcessId(windowElement: element)
+          guard let pid: pid_t = AXUIElementHelper.getProcessId(windowElement: element) else {
+            print("Failed to get process ID")  // TODO: throw
+            return;
           }
-          removeFromRegistry(element: element, pid: pid!, windowID: windowID!)
+          removeFromRegistry(element: element, pid: pid, windowID: windowID)
           break
         default:
           return
